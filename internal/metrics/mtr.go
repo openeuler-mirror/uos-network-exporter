@@ -142,3 +142,8 @@ func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 				m.setMetricWithLabels("rtt_snt_count", float64(summary.Snt), summaryLabels)
 				m.setMetricWithLabels("rtt_snt_fail_count", float64(summary.SntFail), summaryLabels)
 				m.setMetricWithLabels("rtt_snt_seconds", summary.SntTime.Seconds(), summaryLabels)
+			}
+		}
+	}
+	m.setMetric("targets", float64(targetCount))
+}
