@@ -22,3 +22,11 @@ var (
 		Insecure: false,
 	}
 )
+
+func init() {
+	ScrapeUrl = kingpin.Flag("scrape_uri", "Scrape URI").Short('s').String()
+	Insecure = kingpin.Flag("insecure", "Ignore server certificate").Bool()
+}
+
+type Settings struct {
+	ScrapeUri string `yaml:"scrape_uri"`
