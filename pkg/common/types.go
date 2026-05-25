@@ -19,6 +19,16 @@ type IcmpSummary struct {
 	SntTime     time.Duration `json:"snt_time"`
 }
 
+type IcmpHop struct {
+	Success     bool          `json:"success"`
+	AddressFrom string        `json:"address_from"`
+	AddressTo   string        `json:"address_to"`
+	TTL         int           `json:"ttl"`
+	Snt         int           `json:"snt"`
+	SntFail     int           `json:"snt_fail"`
+	LastTime    time.Duration `json:"last"`
+}
+
 type IcmpID struct {
 	icmpID int32
 }
