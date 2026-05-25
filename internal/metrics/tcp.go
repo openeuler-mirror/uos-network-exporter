@@ -54,3 +54,11 @@ func (t *TCPMetrics) Collect(cfg *config.NetworkConfig) {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		ipAddrs, err := common.DestAddrs(ctx, target.Host, t.resolver, 5*time.Second)
 		cancel()
+		if err != nil || len(ipAddrs) == 0 {
+			t.logger.Warn("Failed to resolve target", "host", target.Host, "error", err)
+			t.setMetricWithLabels("connection_status", 0, map[string]string{
+				"name": target.Name, "target": target.Host, "target_ip": "unknown",
+				"source_ip": target.SourceIp, "port": target.Port,
+			})
+			continue
+		}
