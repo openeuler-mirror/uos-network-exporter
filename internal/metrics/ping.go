@@ -99,3 +99,11 @@ func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 		if err != nil || len(ipAddrs) == 0 {
 			p.logger.Warn("Failed to resolve target", "host", target.Host, "error", err)
 			p.setMetricWithLabels("status", 0, map[string]string{
+				"name": target.Name, "target": target.Host, "target_ip": "unknown",
+			})
+			continue
+		}
+		for _, ip := range ipAddrs {
+			cacheKey := target.Name + "_" + ip
+			result := p.getCachedResult(cacheKey)
+			if result == nil {
