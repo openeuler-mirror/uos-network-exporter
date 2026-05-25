@@ -62,3 +62,11 @@ func (h *HTTPMetrics) Collect(cfg *config.NetworkConfig) {
 		if err == nil {
 			success = 1.0
 			statusCode = float64(resp.StatusCode)
+			contentLength = float64(resp.ContentLength)
+			if err := resp.Body.Close(); err != nil {
+				h.logger.Warn("failed to close response body", "error", err)
+			}
+		}
+		baseLabels := map[string]string{
+			"name": target.Name, "target": target.Host,
+		}
