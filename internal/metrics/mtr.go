@@ -102,3 +102,11 @@ func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 				result = mtr.RunMTR(ip, "", cfg.MTR.Timeout.Duration(), cfg.MTR.MaxHops, cfg.MTR.Count)
 				m.setCachedResult(cacheKey, result)
 			} else {
+				m.logger.Debug("Using cached MTR result", "target", target.Name, "ip", ip)
+			}
+			baseLabels := map[string]string{"name": target.Name, "target": result.DestAddr}
+			m.setMetricWithLabels("hops", float64(len(result.Hops)), baseLabels)
+			for _, hop := range result.Hops {
+				m.setMetricWithLabels("rtt_seconds", hop.LastTime.Seconds(), map[string]string{
+					"name": target.Name, "target": result.DestAddr, "ttl": strconv.Itoa(hop.TTL),
+					"path": hop.AddressTo, "type": "last",
