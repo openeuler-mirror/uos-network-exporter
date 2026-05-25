@@ -60,3 +60,16 @@ func TimeRange(values []time.Duration) time.Duration {
 	}
 	return max - min
 }
+
+// TimeAverage Calculates the average of a slice of durations
+func TimeAverage(values []time.Duration) float64 {
+	l := len(values)
+	if l <= 0 {
+		return float64(0.0)
+	}
+	s := time.Duration(0)
+	for _, d := range values {
+		s += d
+	}
+	return float64(s) / float64(l)
+}
