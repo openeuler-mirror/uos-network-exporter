@@ -22,3 +22,11 @@ type MTRCacheEntry struct {
 
 type MTRMetrics struct {
 	*baseMetrics
+	logger   *slog.Logger
+	resolver *net.Resolver
+	cache    map[string]*MTRCacheEntry
+	cacheMux sync.RWMutex
+	cacheTTL time.Duration
+}
+
+func NewMTRMetrics(logger *slog.Logger, resolver *net.Resolver) *MTRMetrics {
