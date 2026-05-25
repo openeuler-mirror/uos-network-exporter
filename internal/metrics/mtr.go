@@ -110,3 +110,11 @@ func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 				m.setMetricWithLabels("rtt_seconds", hop.LastTime.Seconds(), map[string]string{
 					"name": target.Name, "target": result.DestAddr, "ttl": strconv.Itoa(hop.TTL),
 					"path": hop.AddressTo, "type": "last",
+				})
+				m.setMetricWithLabels("rtt_seconds", hop.BestTime.Seconds(), map[string]string{
+					"name": target.Name, "target": result.DestAddr, "ttl": strconv.Itoa(hop.TTL),
+					"path": hop.AddressTo, "type": "best",
+				})
+				m.setMetricWithLabels("rtt_seconds", hop.AvgTime.Seconds(), map[string]string{
+					"name": target.Name, "target": result.DestAddr, "ttl": strconv.Itoa(hop.TTL),
+					"path": hop.AddressTo, "type": "mean",
