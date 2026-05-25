@@ -46,3 +46,11 @@ func (h *HTTPMetrics) Collect(cfg *config.NetworkConfig) {
 	h.setMetric("get_up", 1)
 	targetCount := 0
 	for _, target := range cfg.Targets {
+		if target.Type != "HTTPGet" {
+			continue
+		}
+		targetCount++
+		client := &http.Client{
+			Timeout: time.Second * 3,
+		}
+		start := time.Now()
