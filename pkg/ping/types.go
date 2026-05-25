@@ -43,3 +43,42 @@ type PingOptions struct {
 	timeout    time.Duration
 	packetSize int
 }
+
+// Count Getter
+func (options *PingOptions) Count() int {
+	if options.count == 0 {
+		options.count = defaultCount
+	}
+	return options.count
+}
+
+// SetCount Setter
+func (options *PingOptions) SetCount(count int) {
+	options.count = count
+}
+
+// Timeout Getter
+func (options *PingOptions) Timeout() time.Duration {
+	if options.timeout == 0 {
+		options.timeout = defaultTimeout
+	}
+	return options.timeout
+}
+
+// SetTimeout Setter
+func (options *PingOptions) SetTimeout(timeout time.Duration) {
+	options.timeout = timeout
+}
+
+// PacketSize Getter
+func (options *PingOptions) PacketSize() int {
+	if options.packetSize == 0 {
+		options.packetSize = defaultPackerSize
+	}
+	return options.packetSize
+}
+
+// SetPacketSize Setter
+func (options *PingOptions) SetPacketSize(packetSize int) {
+	options.packetSize = packetSize
+}
