@@ -13,3 +13,9 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 )
+
+// PingCacheEntry PING缓存条目
+type PingCacheEntry struct {
+	result    *ping.PingResult
+	timestamp time.Time
+}
