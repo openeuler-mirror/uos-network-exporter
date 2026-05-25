@@ -35,3 +35,11 @@ func NewPingMetrics(logger *slog.Logger, resolver *net.Resolver) *PingMetrics {
 	base := newBaseMetrics("ping")
 	base.addMetric("status", "Ping Status", []string{"name", "target", "target_ip"})
 	base.addMetric("rtt_seconds", "Round Trip Time", []string{"name", "target", "target_ip", "type"})
+
+	base.addMetric("rtt_snt_count", "Packet sent count", []string{"name", "target", "target_ip"})
+	base.addMetric("rtt_snt_fail_count", "Packet sent fail count", []string{"name", "target", "target_ip"})
+	base.addMetric("rtt_snt_seconds", "Packet sent time total", []string{"name", "target", "target_ip"})
+	base.addMetric("loss_percent", "Packet loss in percent", []string{"name", "target", "target_ip"})
+	base.addMetric("targets", "Number of active targets", nil)
+	base.addMetric("up", "Exporter state", nil)
+
