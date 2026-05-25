@@ -126,3 +126,11 @@ func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 				m.setMetricWithLabels("rtt_seconds", hop.SumTime.Seconds(), map[string]string{
 					"name": target.Name, "target": result.DestAddr, "ttl": strconv.Itoa(hop.TTL),
 					"path": hop.AddressTo, "type": "sum",
+				})
+				m.setMetricWithLabels("rtt_seconds", hop.Loss, map[string]string{
+					"name": target.Name, "target": result.DestAddr, "ttl": strconv.Itoa(hop.TTL),
+					"path": hop.AddressTo, "type": "loss",
+				})
+			}
+			for ttlKey, summary := range result.HopSummaryMap {
+				ttlParts := strings.Split(ttlKey, "_")
