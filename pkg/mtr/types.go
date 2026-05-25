@@ -17,3 +17,25 @@ type MtrResult struct {
 	Hops          []common.IcmpHop               `json:"hops"`
 	HopSummaryMap map[string]*common.IcmpSummary `json:"hop_summary_map"`
 }
+
+// MtrReturn MTR Response
+type MtrReturn struct {
+	success   bool
+	ttl       int
+	host      string
+	succSum   int
+	lastTime  time.Duration
+	allTime   []time.Duration
+	sumTime   time.Duration
+	bestTime  time.Duration
+	avgTime   time.Duration
+	worstTime time.Duration
+}
+
+// MtrOptions MTR Options
+type MtrOptions struct {
+	maxHops    int
+	timeout    time.Duration
+	packetSize int
+	count      int
+}
