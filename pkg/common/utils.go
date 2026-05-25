@@ -83,3 +83,12 @@ func TimeSquaredDeviation(values []time.Duration) float64 {
 	}
 	return sd
 }
+
+// TimeUncorrectedDeviation Calculates standard deviation without correction
+func TimeUncorrectedDeviation(values []time.Duration) float64 {
+	if len(values) == 0 {
+		return 0.0
+	}
+	sd := TimeSquaredDeviation(values)
+	return math.Sqrt(sd / float64(len(values)))
+}
