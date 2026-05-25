@@ -105,3 +105,44 @@ type duration time.Duration
 type extraKV struct {
 	Kv map[string]string `yaml:"kv,omitempty" json:"kv,omitempty"`
 }
+
+// UnmarshalYAML is used to unmarshal into map[string]string
+func (b *extraKV) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	return unmarshal(&b.Kv)
+}
+
+// Resolver DNS resolver
+type Resolver struct {
+	Resolver *net.Resolver
+	Timeout  time.Duration
+}
+
+// SafeConfig safe config reload
+type SafeConfig struct {
+	Cfg *NetworkConfig
+	sync.RWMutex
+}
+
+// Duration is a convenience getter.
+func (d duration) Duration() time.Duration {
+	return time.Duration(d)
+}
+
+// Set updates the underlying duration.
+func (d *duration) Set(dur time.Duration) {
+	*d = duration(dur)
+}
+
+// UnmarshalYAML implements yaml.Unmarshaler interface.
+func (d *duration) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var s string
+	if err := unmarshal(&s); err != nil {
+		return err
+	}
+	dur, err := time.ParseDuration(s)
+	if err != nil {
+		return err
+	}
+	*d = duration(dur)
+	return nil
+}
