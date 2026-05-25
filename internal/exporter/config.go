@@ -21,3 +21,7 @@ var (
 			LogPath: "./network_exporter.log",
 			MaxSize: "10MB",
 			MaxAge:  time.Hour * 24 * 7},
+		Address:     "127.0.0.1",
+		Port:        9118,
+		MetricsPath: "/metrics",
+	}
