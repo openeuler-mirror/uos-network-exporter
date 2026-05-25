@@ -38,3 +38,11 @@ func (t *TCPMetrics) Describe(ch chan<- *prometheus.Desc) {
 func (t *TCPMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
 	t.baseMetrics.Collect(ch)
 }
+
+func (t *TCPMetrics) Collect(cfg *config.NetworkConfig) {
+	if cfg == nil {
+		t.logger.Warn("TCP config is nil")
+		return
+	}
+	t.setMetric("up", 1)
+	targetCount := 0
