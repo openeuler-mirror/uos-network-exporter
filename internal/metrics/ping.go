@@ -59,3 +59,11 @@ func (p *PingMetrics) Describe(ch chan<- *prometheus.Desc) {
 
 func (p *PingMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
 	p.baseMetrics.Collect(ch)
+}
+
+func (p *PingMetrics) getCachedResult(key string) *ping.PingResult {
+	p.cacheMux.RLock()
+	defer p.cacheMux.RUnlock()
+	if entry, exists := p.cache[key]; exists {
+		if time.Since(entry.timestamp) < p.cacheTTL {
+			return entry.result
