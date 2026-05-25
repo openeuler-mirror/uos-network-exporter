@@ -41,3 +41,13 @@ func (r *Registry) GetMetrics() []Metric {
 	defer r.mu.RUnlock()
 	return r.metrics
 }
+
+func (r *Registry) Describe(descs chan<- *prometheus.Desc) {
+}
+
+func (r *Registry) Collect(ch chan<- prometheus.Metric) {
+	metrics := r.GetMetrics()
+	for _, m := range metrics {
+		m.Collect(ch)
+	}
+}
