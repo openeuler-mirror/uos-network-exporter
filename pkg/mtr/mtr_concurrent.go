@@ -239,3 +239,33 @@ func buildResult(result *MtrResult, mtrReturns []*safeReturn, destAddr string, c
 		}
 	}
 }
+
+// RunMTRWithBatching execute batched concurrent MTR
+func RunMTRWithBatching(destAddr, srcAddr string, timeout time.Duration, maxHops, count int, batchSize int) *MtrResult {
+	options := &ConcurrentMTROptions{
+		MaxWorkers:     maxHops / 2,
+		BatchSize:      batchSize,
+		EarlyStop:      true,
+		ProgressReport: false,
+		Timeout:        time.Duration(count) * timeout * 2,
+	}
+
+	if options.MaxWorkers < 1 {
+		options.MaxWorkers = 1
+	}
+	if options.MaxWorkers > 15 {
+		options.MaxWorkers = 15
+	}
+
+	return RunMTRConcurrent(destAddr, srcAddr, timeout, maxHops, count, options)
+}
+
+func safeIntToInt32(value int) int32 {
+	if value > math.MaxInt32 {
+		return math.MaxInt32
+	}
+	if value < math.MinInt32 {
+		return math.MinInt32
+	}
+	return int32(value)
+}
