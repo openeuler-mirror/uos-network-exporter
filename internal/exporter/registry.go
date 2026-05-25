@@ -15,3 +15,11 @@ type Registry struct {
 	metrics []Metric
 	mu      sync.RWMutex
 }
+
+func Register(metric Metric) {
+	defaultReg.Register(metric)
+}
+
+func RegisterPrometheus(reg *prometheus.Registry) {
+	reg.MustRegister(defaultReg)
+}
