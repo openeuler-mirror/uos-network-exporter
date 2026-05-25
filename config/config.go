@@ -70,3 +70,11 @@ type ICMP struct {
 type Conf struct {
 	Refresh           duration `yaml:"refresh" json:"refresh"`
 	Nameserver        string   `yaml:"nameserver" json:"nameserver"`
+	NameserverTimeout duration `yaml:"nameserver_timeout" json:"nameserver_timeout"`
+}
+
+type NetworkConfig struct {
+	Conf    `yaml:"conf" json:"conf"`
+	ICMP    `yaml:"icmp" json:"icmp"`
+	MTR     `yaml:"mtr" json:"mtr"`
+	TCP     `yaml:"tcp" json:"tcp"`
