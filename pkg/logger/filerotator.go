@@ -80,3 +80,10 @@ func (fr *FileRotator) setupCurrent() error {
 	}
 	return nil
 }
+
+func (fr *FileRotator) Close() error {
+	if fr.current != nil {
+		return fr.current.Close()
+	}
+	return nil
+}
