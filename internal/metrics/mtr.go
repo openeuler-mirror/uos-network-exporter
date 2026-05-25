@@ -78,3 +78,11 @@ func (m *MTRMetrics) setCachedResult(key string, result *mtr.MtrResult) {
 func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 	if cfg == nil {
 		m.logger.Warn("MTR config is nil")
+		return
+	}
+	m.setMetric("up", 1)
+	targetCount := 0
+	for _, target := range cfg.Targets {
+		if target.Type != "MTR" && target.Type != "ICMP+MTR" {
+			continue
+		}
