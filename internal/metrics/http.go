@@ -38,3 +38,11 @@ func (h *HTTPMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
 	h.baseMetrics.Collect(ch)
 }
 
+func (h *HTTPMetrics) Collect(cfg *config.NetworkConfig) {
+	if cfg == nil {
+		h.logger.Warn("HTTPGet config is nil")
+		return
+	}
+	h.setMetric("get_up", 1)
+	targetCount := 0
+	for _, target := range cfg.Targets {
