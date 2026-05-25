@@ -4,4 +4,12 @@ import (
 	"context"
 	"log/slog"
 	"net"
+	"sync"
+	"time"
+
+	"uos_network_exporter/config"
+	"uos_network_exporter/pkg/common"
+	"uos_network_exporter/pkg/ping"
+
+	"github.com/prometheus/client_golang/prometheus"
 )
