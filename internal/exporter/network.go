@@ -28,3 +28,11 @@ func NewNetworkExporter(logger *slog.Logger, cfg *config.SafeConfig) *NetworkExp
 	resolver := &net.Resolver{
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			d := net.Dialer{
+				Timeout: time.Second * 5,
+			}
+			return d.DialContext(ctx, network, address)
+		},
+	}
+
+	return &NetworkExporter{
