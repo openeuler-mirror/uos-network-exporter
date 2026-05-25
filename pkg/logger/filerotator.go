@@ -94,3 +94,45 @@ func (fr *FileRotator) shouldRotate() bool {
 	}
 	return false
 }
+
+func (fr *FileRotator) rotate() error {
+	if fr.current != nil {
+		err := fr.current.Close()
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := fr.keepFiles - 1; i > 0; i-- {
+		if !utils.FileExists(fr.getLogPath(i)) {
+			continue
+		}
+		if i == fr.keepFiles-1 {
+				err := os.Remove(fr.getLogPath(i))
+				if err != nil {
+					return err
+				}
+				continue
+			}
+			err := os.Rename(fr.getLogPath(i), fr.getLogPath(i+1))
+			if err != nil {
+				return err
+			}
+		}
+	}
+	err := os.Rename(fr.basePath, fr.getLogPath(1))
+	if err != nil {
+		return err
+	}
+	fr.current, err = os.Create(fr.basePath)
+	if err != nil {
+		return err
+	}
+	fr.size = 0
+	fr.startTime = time.Now()
+	return nil
+}
+
+func (fr *FileRotator) getLogPath(number int) string {
+	return fmt.Sprintf("%s.%d", fr.basePath, number)
+}
