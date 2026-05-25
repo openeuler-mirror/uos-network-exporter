@@ -46,3 +46,11 @@ type Targets []struct {
 
 type HTTPGet struct {
 	Interval duration `yaml:"interval" json:"interval"`
+	Timeout  duration `yaml:"timeout" json:"timeout"`
+}
+
+type TCP struct {
+	Interval duration `yaml:"interval" json:"interval"`
+	Timeout  duration `yaml:"timeout" json:"timeout"`
+}
+
