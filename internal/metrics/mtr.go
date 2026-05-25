@@ -86,3 +86,11 @@ func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 		if target.Type != "MTR" && target.Type != "ICMP+MTR" {
 			continue
 		}
+		targetCount++
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		ipAddrs, err := common.DestAddrs(ctx, target.Host, m.resolver, 5*time.Second)
+		cancel()
+		if err != nil || len(ipAddrs) == 0 {
+			m.logger.Warn("Failed to resolve target", "host", target.Host, "error", err)
+			continue
+		}
