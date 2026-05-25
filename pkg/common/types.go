@@ -2,6 +2,7 @@ package common
 
 import (
 	"sync/atomic"
+	"time"
 )
 
 type IcmpID struct {
