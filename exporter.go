@@ -11,3 +11,13 @@ func Run(name string, version string) error {
 
 	s.PrintVersion()
 	err := s.SetUp()
+	if err != nil {
+		return err
+	}
+	go func() {
+		err := s.Run()
+		if err != nil {
+			s.Error = err
+		}
+		s.Exit()
+	}()
