@@ -22,3 +22,11 @@ func NewHTTPMetrics(logger *slog.Logger, resolver *net.Resolver) *HTTPMetrics {
 	base.addMetric("get_content_bytes", "HTTP Get Content Size in bytes", []string{"name", "target"})
 	base.addMetric("get_status", "HTTP Get Status", []string{"name", "target"})
 	base.addMetric("get_targets", "Number of active targets", nil)
+	base.addMetric("get_up", "Exporter state", nil)
+	return &HTTPMetrics{
+		baseMetrics: base,
+		logger:      logger,
+		resolver:    resolver,
+	}
+}
+
