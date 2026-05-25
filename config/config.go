@@ -38,3 +38,11 @@ type Targets []struct {
 	Host     string   `yaml:"host" json:"host"`
 	Port     string   `yaml:"port" json:"port"`
 	Type     string   `yaml:"type" json:"type"`
+	Proxy    string   `yaml:"proxy" json:"proxy"`
+	Probe    []string `yaml:"probe" json:"probe"`
+	SourceIp string   `yaml:"source_ip" json:"source_ip"`
+	Labels   extraKV  `yaml:"labels,omitempty" json:"labels,omitempty"`
+}
+
+type HTTPGet struct {
+	Interval duration `yaml:"interval" json:"interval"`
