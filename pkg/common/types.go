@@ -11,6 +11,14 @@ type IcmpReturn struct {
 	Elapsed time.Duration
 }
 
+type IcmpSummary struct {
+	AddressFrom string        `json:"address_from"`
+	AddressTo   string        `json:"address_to"`
+	Snt         int           `json:"snt"`
+	SntFail     int           `json:"snt_fail"`
+	SntTime     time.Duration `json:"snt_time"`
+}
+
 type IcmpID struct {
 	icmpID int32
 }
