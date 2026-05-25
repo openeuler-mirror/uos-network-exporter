@@ -25,3 +25,21 @@ type PingResult struct {
 	SntFailSummary       int           `json:"snt_fail_summary"`
 	SntTimeSummary       time.Duration `json:"snt_time_summary"`
 }
+
+// PingReturn ICMP Response
+type PingReturn struct {
+	success   bool
+	succSum   int
+	allTime   []time.Duration
+	sumTime   time.Duration
+	bestTime  time.Duration
+	avgTime   time.Duration
+	worstTime time.Duration
+}
+
+// PingOptions ICMP Options
+type PingOptions struct {
+	count      int
+	timeout    time.Duration
+	packetSize int
+}
