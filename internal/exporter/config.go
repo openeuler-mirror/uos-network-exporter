@@ -44,3 +44,7 @@ type Config struct {
 	Port        int           `yaml:"port"`
 	MetricsPath string        `yaml:"metricsPath"`
 }
+
+func Unpack(config interface{}) error {
+	configPath := *Configfile
+	if utils.FileExists(*NetworkConfigfile) {
