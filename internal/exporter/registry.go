@@ -23,3 +23,9 @@ func Register(metric Metric) {
 func RegisterPrometheus(reg *prometheus.Registry) {
 	reg.MustRegister(defaultReg)
 }
+
+func NewRegistry() *Registry {
+	return &Registry{
+		metrics: []Metric{},
+	}
+}
