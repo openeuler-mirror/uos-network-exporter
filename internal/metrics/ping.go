@@ -51,3 +51,11 @@ func NewPingMetrics(logger *slog.Logger, resolver *net.Resolver) *PingMetrics {
 		cache:       make(map[string]*PingCacheEntry),
 		cacheTTL:    15 * time.Second,
 	}
+}
+
+func (p *PingMetrics) Describe(ch chan<- *prometheus.Desc) {
+	p.baseMetrics.Describe(ch)
+}
+
+func (p *PingMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
+	p.baseMetrics.Collect(ch)
