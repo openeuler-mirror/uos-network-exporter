@@ -94,3 +94,11 @@ func (b *extraKV) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 type Resolver struct {
 	Resolver *net.Resolver
+	Timeout  time.Duration
+}
+
+type SafeConfig struct {
+	Cfg *NetworkConfig
+	sync.RWMutex
+}
+
