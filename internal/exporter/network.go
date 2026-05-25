@@ -11,3 +11,11 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 )
+
+// NetworkExporter 网络监控导出器
+type NetworkExporter struct {
+	logger      *slog.Logger
+	config      *config.SafeConfig
+	resolver    *net.Resolver
+	pingMetrics *metrics.PingMetrics
+	tcpMetrics  *metrics.TCPMetrics
