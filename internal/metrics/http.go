@@ -78,3 +78,4 @@ func (h *HTTPMetrics) Collect(cfg *config.NetworkConfig) {
 		h.setMetric("get_up", success)
 	}
 	h.setMetric("get_targets", float64(targetCount))
+}
