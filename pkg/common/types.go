@@ -27,6 +27,11 @@ type IcmpHop struct {
 	Snt         int           `json:"snt"`
 	SntFail     int           `json:"snt_fail"`
 	LastTime    time.Duration `json:"last"`
+	SumTime     time.Duration `json:"sum"`
+	AvgTime     time.Duration `json:"avg"`
+	BestTime    time.Duration `json:"best"`
+	WorstTime   time.Duration `json:"worst"`
+	Loss        float64       `json:"loss"`
 }
 
 type IcmpID struct {
