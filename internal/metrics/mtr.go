@@ -134,3 +134,11 @@ func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 			}
 			for ttlKey, summary := range result.HopSummaryMap {
 				ttlParts := strings.Split(ttlKey, "_")
+				ttlStr := ttlParts[0]
+				summaryLabels := map[string]string{
+					"name": target.Name, "target": result.DestAddr,
+					"ttl": ttlStr, "path": summary.AddressTo,
+				}
+				m.setMetricWithLabels("rtt_snt_count", float64(summary.Snt), summaryLabels)
+				m.setMetricWithLabels("rtt_snt_fail_count", float64(summary.SntFail), summaryLabels)
+				m.setMetricWithLabels("rtt_snt_seconds", summary.SntTime.Seconds(), summaryLabels)
