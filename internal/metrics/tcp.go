@@ -62,3 +62,11 @@ func (t *TCPMetrics) Collect(cfg *config.NetworkConfig) {
 			})
 			continue
 		}
+		for _, ip := range ipAddrs {
+			result := tcp.TestTCPPort(target.Host, ip, target.Port, target.SourceIp, cfg.TCP.Timeout.Duration())
+			labels := map[string]string{
+				"name": target.Name, "target": target.Host, "target_ip": ip,
+				"source_ip": result.SrcIp, "port": target.Port,
+			}
+			if result.Success {
+				t.setMetricWithLabels("connection_status", 1, labels)
