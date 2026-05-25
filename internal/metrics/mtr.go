@@ -46,3 +46,11 @@ func NewMTRMetrics(logger *slog.Logger, resolver *net.Resolver) *MTRMetrics {
 		cacheTTL:    30 * time.Second,
 	}
 }
+
+func (m *MTRMetrics) Describe(ch chan<- *prometheus.Desc) {
+	m.baseMetrics.Describe(ch)
+}
+
+func (m *MTRMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
+	m.baseMetrics.Collect(ch)
+}
