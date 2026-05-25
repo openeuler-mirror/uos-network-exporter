@@ -78,3 +78,11 @@ type NetworkConfig struct {
 	ICMP    `yaml:"icmp" json:"icmp"`
 	MTR     `yaml:"mtr" json:"mtr"`
 	TCP     `yaml:"tcp" json:"tcp"`
+	HTTPGet `yaml:"http_get" json:"http_get"`
+	Targets `yaml:"targets" json:"targets"`
+}
+
+type duration time.Duration
+
+type extraKV struct {
+	Kv map[string]string `yaml:"kv,omitempty" json:"kv,omitempty"`
