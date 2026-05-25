@@ -15,3 +15,12 @@ func DestAddrs(ctx context.Context, host string, resolver *net.Resolver, timeout
 	if err != nil {
 		return nil, fmt.Errorf("resolving target: %v", err)
 	}
+	for _, addr := range addrs {
+		ipAddr, err := net.ResolveIPAddr("ip", addr.IP.String())
+		if err != nil {
+			continue
+		}
+		ipAddrs = append(ipAddrs, ipAddr.IP.String())
+	}
+	return ipAddrs, nil
+}
