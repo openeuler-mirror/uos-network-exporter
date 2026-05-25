@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+type IcmpReturn struct {
+	Success bool
+	Addr    string
+	Elapsed time.Duration
+}
+
 type IcmpID struct {
 	icmpID int32
 }
