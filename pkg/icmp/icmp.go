@@ -104,3 +104,52 @@ func icmpIpv4(localAddr string, dst net.Addr, ttl int, pid int, timeout time.Dur
 	hop.Success = true
 	return hop, err
 }
+
+func icmpIpv6(localAddr string, dst net.Addr, ttl, pid int, timeout time.Duration, seq int) (hop common.IcmpReturn, err error) {
+	hop.Success = false
+	start := time.Now()
+	c, err := icmp.ListenPacket("ip6:ipv6-icmp", localAddr)
+	if err != nil {
+		return hop, err
+	}
+	defer c.Close()
+
+	if err = c.IPv6PacketConn().SetHopLimit(ttl); err != nil {
+		return hop, err
+	}
+
+	if err = c.SetDeadline(time.Now().Add(timeout)); err != nil {
+		return hop, err
+	}
+
+	bs := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bs, safeIntToUint32(seq))
+	wm := icmp.Message{
+		Type: ipv6.ICMPTypeEchoRequest,
+		Code: 0,
+		Body: &icmp.Echo{
+			ID:   pid,
+			Seq:  seq,
+			Data: append(bs, 'x'),
+		},
+	}
+	wb, err := wm.Marshal(nil)
+	if err != nil {
+		return hop, err
+	}
+
+	if _, err := c.WriteTo(wb, dst); err != nil {
+		return hop, err
+	}
+
+	peer, _, err := listenForSpecific6(c, append(bs, 'x'), pid, seq)
+	if err != nil {
+		return hop, err
+	}
+
+	elapsed := time.Since(start)
+	hop.Elapsed = elapsed
+	hop.Addr = peer
+	hop.Success = true
+	return hop, err
+}
