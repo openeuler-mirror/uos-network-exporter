@@ -7,3 +7,7 @@ import (
 
 func Run(name string, version string) error {
 	logger.InitDefaultLog()
+	s := server.NewServer(name, version)
+
+	s.PrintVersion()
+	err := s.SetUp()
