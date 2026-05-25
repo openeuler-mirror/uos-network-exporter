@@ -146,3 +146,26 @@ func (d *duration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*d = duration(dur)
 	return nil
 }
+
+// ReloadConfig safe config reload
+func (sc *SafeConfig) ReloadConfig(confFile string) (err error) {
+	hostname, err := os.Hostname()
+	if err != nil {
+		return err
+	}
+
+	var c = &NetworkConfig{}
+
+	cleanPath := filepath.Clean(confFile)
+	configDir := "/etc/uos-exporter"
+	if !strings.HasPrefix(cleanPath, configDir) {
+		return fmt.Errorf("config file must be located within %s", configDir)
+	}
+	content, err := os.ReadFile(confFile)
+	if err != nil {
+		return fmt.Errorf("reading config file: %s", err)
+	}
+
+	if err = yaml.Unmarshal(content, c); err != nil {
+		return fmt.Errorf("parsing config file: %s", err)
+	}
