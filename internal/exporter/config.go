@@ -25,3 +25,7 @@ var (
 		Port:        9118,
 		MetricsPath: "/metrics",
 	}
+)
+
+func init() {
+	Configfile = kingpin.Flag("config", "Configuration file").
