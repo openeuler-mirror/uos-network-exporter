@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"os"
+)
+
 var (
 	Name    = "network_exporter"
 	Version = "1.0.0"
