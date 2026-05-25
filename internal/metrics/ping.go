@@ -139,3 +139,7 @@ func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 			p.setMetricWithLabels("rtt_snt_fail_count", float64(result.SntFailSummary), labels)
 			p.setMetricWithLabels("rtt_snt_seconds", result.SntTimeSummary.Seconds(), labels)
 		}
+	}
+	p.setMetric("targets", float64(targetCount))
+}
+
