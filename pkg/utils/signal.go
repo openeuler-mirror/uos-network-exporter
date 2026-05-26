@@ -12,3 +12,6 @@ func HandleSignals(function func()) {
 	sigc := make(chan os.Signal, 1)
 	defer close(sigc)
 	signal.Notify(sigc, syscall.SIGINT, syscall.SIGTERM)
+	sig := <-sigc
+	callback.Do(function)
+}
