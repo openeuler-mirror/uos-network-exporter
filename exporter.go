@@ -21,3 +21,9 @@ func Run(name string, version string) error {
 		}
 		s.Exit()
 	}()
+	select {
+	case <-s.ExitSignal:
+		s.Stop()
+		return s.Error
+	}
+}
