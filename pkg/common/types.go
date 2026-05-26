@@ -15,3 +15,11 @@ func (c *IcmpID) Get() int32 {
 			atomic.StoreInt32(&c.icmpID, 1)
 			val = 1
 		}
+		if atomic.CompareAndSwapInt32(&c.icmpID, 65500, 2) {
+			return 1
+		}
+		if atomic.CompareAndSwapInt32(&c.icmpID, val, val+1) {
+			return val
+		}
+	}
+}
