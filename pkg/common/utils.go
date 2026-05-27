@@ -42,3 +42,21 @@ func IsEqualIP(ips1, ips2 string) bool {
 func Time2Float(t time.Duration) float32 {
 	return (float32)(t/time.Microsecond) / float32(1000)
 }
+
+// TimeRange finds the range of a slice of durations
+func TimeRange(values []time.Duration) time.Duration {
+	if len(values) <= 1 {
+		return time.Duration(0)
+	}
+	min := values[0]
+	max := time.Duration(0)
+	for _, v := range values {
+		if v < min {
+			min = v
+		}
+		if v > max {
+			max = v
+		}
+	}
+	return max - min
+}
