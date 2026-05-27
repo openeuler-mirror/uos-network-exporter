@@ -24,3 +24,15 @@ func DestAddrs(ctx context.Context, host string, resolver *net.Resolver, timeout
 	}
 	return ipAddrs, nil
 }
+
+func IsEqualIP(ips1, ips2 string) bool {
+	ip1 := net.ParseIP(ips1)
+	if ip1 == nil {
+		return false
+	}
+	ip2 := net.ParseIP(ips2)
+	if ip2 == nil {
+		return false
+	}
+	return ip1.String() == ip2.String()
+}
