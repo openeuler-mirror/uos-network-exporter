@@ -37,3 +37,8 @@ func IsEqualIP(ips1, ips2 string) bool {
 	}
 	return ip1.String() == ip2.String()
 }
+
+// Time2Float Convert time to float32
+func Time2Float(t time.Duration) float32 {
+	return (float32)(t/time.Microsecond) / float32(1000)
+}
