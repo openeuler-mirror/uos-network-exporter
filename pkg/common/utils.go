@@ -92,3 +92,9 @@ func TimeUncorrectedDeviation(values []time.Duration) float64 {
 	sd := TimeSquaredDeviation(values)
 	return math.Sqrt(sd / float64(len(values)))
 }
+
+// TimeCorrectedDeviation Calculates standard deviation using Bessel's correction
+func TimeCorrectedDeviation(values []time.Duration) float64 {
+	sd := TimeSquaredDeviation(values)
+	return math.Sqrt(sd / (float64(len(values)) - 1))
+}
