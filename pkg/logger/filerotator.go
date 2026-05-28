@@ -38,3 +38,22 @@ func NewFileRotator(basePath string, maxSize int64, maxAge time.Duration) *FileR
 		keepFiles: defaultMaxFiles,
 	}
 }
+
+func (fr *FileRotator) Write(p []byte) (n int, err error) {
+	err = fr.setupCurrent()
+	if err != nil {
+		return 0, err
+	}
+	if fr.shouldRotate() {
+		err = fr.rotate()
+		if err != nil {
+			return 0, err
+		}
+	}
+	n, err = fr.current.Write(p)
+	if err != nil {
+		return n, err
+	}
+	fr.size += int64(n)
+	return n, nil
+}
