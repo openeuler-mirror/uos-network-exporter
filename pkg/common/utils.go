@@ -73,3 +73,13 @@ func TimeAverage(values []time.Duration) float64 {
 	}
 	return float64(s) / float64(l)
 }
+
+// TimeSquaredDeviation Calculates the squared deviation
+func TimeSquaredDeviation(values []time.Duration) float64 {
+	avg := TimeAverage(values)
+	sd := 0.0
+	for _, v := range values {
+		sd += math.Pow((float64(v) - float64(avg)), 2.0)
+	}
+	return sd
+}
