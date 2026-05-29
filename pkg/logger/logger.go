@@ -48,3 +48,12 @@ func Init(config fileLogConfig) {
 		logrus.Warnf("support level is [debug,info,warn]")
 	}
 }
+
+func InitDefaultLog() {
+	Init(fileLogConfig{
+		level: "info",
+	})
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableTimestamp: true,
+	})
+}
