@@ -1,7 +1,11 @@
 package logger
 
 import (
+	"strings"
 	"time"
+
+	formatter "gitee.com/weidongkl/logrus-formatter"
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct {
