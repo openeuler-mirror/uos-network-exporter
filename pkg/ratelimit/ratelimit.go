@@ -37,3 +37,25 @@ func NewRateLimiter(limit time.Duration, chanSize int) (*RateLimiter, error) {
 	go rl.startRefreshTokens()
 	return rl, nil
 }
+
+func (rl *RateLimiter) startRefreshTokens() {
+	for range rl.ticker.C {
+		select {
+		case rl.tokens <- struct{}{}:
+		default:
+		}
+	}
+}
+
+func (rl *RateLimiter) Get() error {
+	select {
+	case _, ok := <-rl.tokens:
+		if ok {
+			return nil
+		} else {
+			return ErrRateLimited
+		}
+	default:
+		return ErrRateLimited
+	}
+}
