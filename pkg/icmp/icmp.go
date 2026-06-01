@@ -153,3 +153,53 @@ func icmpIpv6(localAddr string, dst net.Addr, ttl, pid int, timeout time.Duratio
 	hop.Success = true
 	return hop, err
 }
+
+// Listen IPv4 icmp returned packet and verify the content
+func listenForSpecific4(conn *icmp.PacketConn, neededBody []byte, needID int, needSeq int, sent []byte) (string, []byte, error) {
+	for {
+		b := make([]byte, 1500)
+		n, peer, err := conn.ReadFrom(b)
+		if err != nil {
+			if neterr, ok := err.(*net.OpError); ok || neterr.Temporary() {
+				return "", []byte{}, neterr
+			}
+		}
+		if n == 0 {
+			continue
+		}
+
+		x, err := icmp.ParseMessage(protocolICMP, b[:n])
+		if err != nil {
+			continue
+		}
+
+		if x.Type.(ipv4.ICMPType) == ipv4.ICMPTypeTimeExceeded {
+			body := x.Body.(*icmp.TimeExceeded).Data
+			oh, err := ipv4.ParseHeader(body)
+			if err != nil {
+				continue
+			}
+			x, err := icmp.ParseMessage(protocolICMP, body[oh.Len:])
+			if err != nil {
+				continue
+			}
+
+			switch x.Body.(type) {
+			case *icmp.Echo:
+				msg := x.Body.(*icmp.Echo)
+				if msg.ID == needID && msg.Seq == needSeq {
+					return peer.String(), []byte{}, nil
+				}
+			default:
+			}
+		}
+
+		if x.Type.(ipv4.ICMPType) == ipv4.ICMPTypeEchoReply {
+			b, _ := x.Body.Marshal(protocolICMP)
+			if string(b[4:]) != string(neededBody) || x.Body.(*icmp.Echo).ID != needID {
+				continue
+			}
+			return peer.String(), b, nil
+		}
+	}
+}
