@@ -203,3 +203,54 @@ func listenForSpecific4(conn *icmp.PacketConn, neededBody []byte, needID int, ne
 		}
 	}
 }
+
+// Listen IPv6 icmp returned packet and verify the content
+func listenForSpecific6(conn *icmp.PacketConn, neededBody []byte, needID int, needSeq int) (string, []byte, error) {
+	for {
+		b := make([]byte, 1500)
+		n, peer, err := conn.ReadFrom(b)
+		if err != nil {
+			if neterr, ok := err.(*net.OpError); ok || neterr.Temporary() {
+				return "", []byte{}, neterr
+			}
+		}
+		if n == 0 {
+			continue
+		}
+
+		x, err := icmp.ParseMessage(protocolIPv6ICMP, b[:n])
+		if err != nil {
+			continue
+		}
+
+		if x.Type.(ipv6.ICMPType) == ipv6.ICMPTypeTimeExceeded {
+			body := x.Body.(*icmp.TimeExceeded).Data
+			_, err := ipv6.ParseHeader(body)
+			if err != nil {
+				continue
+			}
+			// IPv6 header length is fixed at 40 bytes
+			x, err := icmp.ParseMessage(protocolIPv6ICMP, body[40:])
+			if err != nil {
+				continue
+			}
+
+			switch x.Body.(type) {
+			case *icmp.Echo:
+				msg := x.Body.(*icmp.Echo)
+				if msg.ID == needID && msg.Seq == needSeq {
+					return peer.String(), []byte{}, nil
+				}
+			default:
+			}
+		}
+
+		if x.Type.(ipv6.ICMPType) == ipv6.ICMPTypeEchoReply {
+			b, _ := x.Body.Marshal(protocolIPv6ICMP)
+			if string(b[4:]) != string(neededBody) || x.Body.(*icmp.Echo).ID != needID {
+				continue
+			}
+			return peer.String(), b, nil
+		}
+	}
+}
