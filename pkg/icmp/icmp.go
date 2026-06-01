@@ -54,3 +54,32 @@ func Icmp(destAddr string, srcAddr string, ttl int, pid int, timeout time.Durati
 		return hop, nil
 	}
 }
+
+func icmpIpv4(localAddr string, dst net.Addr, ttl int, pid int, timeout time.Duration, seq int) (hop common.IcmpReturn, err error) {
+	hop.Success = false
+	start := time.Now()
+	c, err := icmp.ListenPacket("ip4:icmp", localAddr)
+	if err != nil {
+		return hop, err
+	}
+	defer c.Close()
+
+	if err = c.IPv4PacketConn().SetTTL(ttl); err != nil {
+		return hop, err
+	}
+
+	if err = c.SetDeadline(time.Now().Add(timeout)); err != nil {
+		return hop, err
+	}
+
+	bs := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bs, safeIntToUint32(seq))
+	wm := icmp.Message{
+		Type: ipv4.ICMPTypeEcho,
+		Code: 0,
+		Body: &icmp.Echo{
+			ID:   pid,
+			Seq:  seq,
+			Data: append(bs, 'x'),
+		},
+	}
