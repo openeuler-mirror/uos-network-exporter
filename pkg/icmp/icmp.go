@@ -83,3 +83,24 @@ func icmpIpv4(localAddr string, dst net.Addr, ttl int, pid int, timeout time.Dur
 			Data: append(bs, 'x'),
 		},
 	}
+
+	wb, err := wm.Marshal(nil)
+	if err != nil {
+		return hop, err
+	}
+
+	if _, err := c.WriteTo(wb, dst); err != nil {
+		return hop, err
+	}
+
+	peer, _, err := listenForSpecific4(c, append(bs, 'x'), pid, seq, wb)
+	if err != nil {
+		return hop, err
+	}
+
+	elapsed := time.Since(start)
+	hop.Elapsed = elapsed
+	hop.Addr = peer
+	hop.Success = true
+	return hop, err
+}
