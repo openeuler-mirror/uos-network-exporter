@@ -39,3 +39,55 @@ type MtrOptions struct {
 	packetSize int
 	count      int
 }
+
+// MaxHops Getter
+func (options *MtrOptions) MaxHops() int {
+	if options.maxHops == 0 {
+		options.maxHops = defaultMaxHops
+	}
+	return options.maxHops
+}
+
+// SetMaxHops Setter
+func (options *MtrOptions) SetMaxHops(maxHops int) {
+	options.maxHops = maxHops
+}
+
+// Timeout Getter
+func (options *MtrOptions) Timeout() time.Duration {
+	if options.timeout == 0 {
+		options.timeout = defaultTimeout
+	}
+	return options.timeout
+}
+
+// SetTimeout Setter
+func (options *MtrOptions) SetTimeout(timeout time.Duration) {
+	options.timeout = timeout
+}
+
+// Count Getter
+func (options *MtrOptions) Count() int {
+	if options.count == 0 {
+		options.count = defaultCount
+	}
+	return options.count
+}
+
+// SetCount Setter
+func (options *MtrOptions) SetCount(count int) {
+	options.count = count
+}
+
+// PacketSize Getter
+func (options *MtrOptions) PacketSize() int {
+	if options.packetSize == 0 {
+		options.packetSize = defaultPackerSize
+	}
+	return options.packetSize
+}
+
+// SetPacketSize Setter
+func (options *MtrOptions) SetPacketSize(packetSize int) {
+	options.packetSize = packetSize
+}
