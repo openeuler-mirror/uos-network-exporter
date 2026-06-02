@@ -13,3 +13,21 @@ type TCPPortReturn struct {
 	SrcIp    string        `json:"src_ip"`
 	ConTime  time.Duration `json:"connection_time"`
 }
+
+// TCPPortOptions TCP Options
+type TCPPortOptions struct {
+	timeout  time.Duration
+}
+
+// Timeout Getter
+func (options *TCPPortOptions) Timeout() time.Duration {
+	if options.timeout == 0 {
+		options.timeout = defaultTimeout
+	}
+	return options.timeout
+}
+
+// SetTimeout Setter
+func (options *TCPPortOptions) SetTimeout(timeout time.Duration) {
+	options.timeout = timeout
+}
