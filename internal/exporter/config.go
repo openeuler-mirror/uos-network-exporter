@@ -15,4 +15,4 @@ import (
 var (
 	Configfile        *string
 	NetworkConfigfile *string
-)
+	DefaultConfig     = Config{
