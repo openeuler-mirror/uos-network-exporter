@@ -118,3 +118,60 @@ func RunMTR(destAddr, srcAddr string, timeout time.Duration, maxHops, count int)
 	}
 
 	wg.Wait()
+
+	// build results
+	for index, mtrReturn := range mtrReturns {
+		if index == 0 {
+			continue
+		}
+
+		if mtrReturn == nil {
+			break
+		}
+
+		hop := common.IcmpHop{TTL: mtrReturn.ttl, Snt: count}
+		if index != 1 {
+			hop.AddressFrom = mtrReturns[index-1].host
+		} else {
+			hop.AddressFrom = mtrReturn.host
+		}
+		hop.AddressTo = mtrReturn.host
+		hop.Success = mtrReturn.success
+		hop.LastTime = mtrReturn.lastTime
+		hop.SumTime = mtrReturn.sumTime
+		hop.AvgTime = mtrReturn.avgTime
+		hop.BestTime = mtrReturn.bestTime
+		hop.WorstTime = mtrReturn.worstTime
+
+		if len(mtrReturn.allTime) > 0 {
+			hop.SquaredDeviationTime = time.Duration(common.TimeSquaredDeviation(mtrReturn.allTime))
+			hop.UncorrectedSDTime = time.Duration(common.TimeUncorrectedDeviation(mtrReturn.allTime))
+			hop.CorrectedSDTime = time.Duration(common.TimeCorrectedDeviation(mtrReturn.allTime))
+			hop.RangeTime = time.Duration(common.TimeRange(mtrReturn.allTime))
+		}
+
+		failSum := count - mtrReturn.succSum
+		hop.SntFail = failSum
+		loss := (float64)(failSum) / (float64)(count)
+		hop.Loss = float64(loss)
+
+		result.Hops = append(result.Hops, hop)
+
+		if hop.Success {
+			summaryKey := fmt.Sprintf("%d_%s", hop.TTL, hop.AddressTo)
+			result.HopSummaryMap[summaryKey] = &common.IcmpSummary{
+				AddressFrom: hop.AddressFrom,
+				AddressTo:   hop.AddressTo,
+				Snt:         hop.Snt,
+				SntFail:     hop.SntFail,
+				SntTime:     hop.SumTime,
+			}
+		}
+
+		if common.IsEqualIP(hop.AddressTo, destAddr) {
+			break
+		}
+	}
+
+	return result
+}
