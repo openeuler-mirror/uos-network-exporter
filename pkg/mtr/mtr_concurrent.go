@@ -174,3 +174,68 @@ func processTask(ctx context.Context, t task, destAddr, srcAddr string, pid int,
 		atomic.StoreInt32(reachedDestination, safeIntToInt32(t.ttl))
 	}
 }
+
+// buildResult build final result
+func buildResult(result *MtrResult, mtrReturns []*safeReturn, destAddr string, count int) {
+	for index := 1; index < len(mtrReturns); index++ {
+		safeRet := mtrReturns[index]
+		if safeRet == nil {
+			break
+		}
+
+		safeRet.mu.RLock()
+		mtrReturn := safeRet.mtrReturn
+		if mtrReturn == nil {
+			safeRet.mu.RUnlock()
+			break
+		}
+
+		hop := common.IcmpHop{TTL: mtrReturn.ttl, Snt: count}
+		if index != 1 && index-1 < len(mtrReturns) && mtrReturns[index-1] != nil {
+			mtrReturns[index-1].mu.RLock()
+			hop.AddressFrom = mtrReturns[index-1].mtrReturn.host
+			mtrReturns[index-1].mu.RUnlock()
+		} else {
+			hop.AddressFrom = mtrReturn.host
+		}
+
+		hop.AddressTo = mtrReturn.host
+		hop.Success = mtrReturn.success
+		hop.LastTime = mtrReturn.lastTime
+		hop.SumTime = mtrReturn.sumTime
+		hop.AvgTime = mtrReturn.avgTime
+		hop.BestTime = mtrReturn.bestTime
+		hop.WorstTime = mtrReturn.worstTime
+
+		if len(mtrReturn.allTime) > 0 {
+			hop.SquaredDeviationTime = time.Duration(common.TimeSquaredDeviation(mtrReturn.allTime))
+			hop.UncorrectedSDTime = time.Duration(common.TimeUncorrectedDeviation(mtrReturn.allTime))
+			hop.CorrectedSDTime = time.Duration(common.TimeCorrectedDeviation(mtrReturn.allTime))
+			hop.RangeTime = time.Duration(common.TimeRange(mtrReturn.allTime))
+		}
+
+		failSum := count - mtrReturn.succSum
+		hop.SntFail = failSum
+		loss := (float64)(failSum) / (float64)(count)
+		hop.Loss = float64(loss)
+
+		safeRet.mu.RUnlock()
+
+		result.Hops = append(result.Hops, hop)
+
+		if hop.Success {
+			summaryKey := fmt.Sprintf("%d_%s", hop.TTL, hop.AddressTo)
+			result.HopSummaryMap[summaryKey] = &common.IcmpSummary{
+				AddressFrom: hop.AddressFrom,
+				AddressTo:   hop.AddressTo,
+				Snt:         hop.Snt,
+				SntFail:     hop.SntFail,
+				SntTime:     hop.SumTime,
+			}
+		}
+
+		if common.IsEqualIP(hop.AddressTo, destAddr) {
+			break
+		}
+	}
+}
