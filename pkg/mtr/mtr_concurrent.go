@@ -122,3 +122,55 @@ func RunMTRConcurrent(destAddr, srcAddr string, timeout time.Duration, maxHops, 
 
 	return result
 }
+
+// safeReturn thread-safe return structure
+type safeReturn struct {
+	mu        sync.RWMutex
+	mtrReturn *MtrReturn
+}
+
+// task represents one ICMP test task
+type task struct {
+	ttl int
+	snt int
+}
+
+// processTask process a single task
+func processTask(ctx context.Context, t task, destAddr, srcAddr string, pid int, timeout time.Duration, seqCounter *int64, mtrReturns []*safeReturn, reachedDestination *int32) {
+	seq := int(atomic.AddInt64(seqCounter, 1))
+
+	select {
+	case <-ctx.Done():
+		return
+	default:
+	}
+
+	hopReturn, err := icmp.Icmp(destAddr, srcAddr, t.ttl, pid, timeout, seq, false)
+	if err != nil || !hopReturn.Success {
+		return
+	}
+
+	safeRet := mtrReturns[t.ttl]
+	safeRet.mu.Lock()
+	defer safeRet.mu.Unlock()
+
+	ret := safeRet.mtrReturn
+	ret.host = hopReturn.Addr
+	ret.lastTime = hopReturn.Elapsed
+	ret.allTime = append(ret.allTime, hopReturn.Elapsed)
+	ret.succSum++
+
+	if ret.worstTime == time.Duration(0) || hopReturn.Elapsed > ret.worstTime {
+		ret.worstTime = hopReturn.Elapsed
+	}
+	if ret.bestTime == time.Duration(0) || hopReturn.Elapsed < ret.bestTime {
+		ret.bestTime = hopReturn.Elapsed
+	}
+	ret.sumTime += hopReturn.Elapsed
+	ret.avgTime = time.Duration((int64)(ret.sumTime/time.Microsecond)/(int64)(ret.succSum)) * time.Microsecond
+	ret.success = true
+
+	if common.IsEqualIP(hopReturn.Addr, destAddr) {
+		atomic.StoreInt32(reachedDestination, safeIntToInt32(t.ttl))
+	}
+}
