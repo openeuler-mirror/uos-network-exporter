@@ -67,3 +67,58 @@ func RunMTRConcurrent(destAddr, srcAddr string, timeout time.Duration, maxHops, 
 			},
 		}
 	}
+
+	taskChan := make(chan task, options.BatchSize*options.MaxWorkers)
+	go func() {
+		defer close(taskChan)
+		for snt := 0; snt < count; snt++ {
+			for ttl := 1; ttl < maxHops; ttl++ {
+				select {
+				case taskChan <- task{ttl: ttl, snt: snt}:
+				case <-ctx.Done():
+					return
+				}
+			}
+		}
+	}()
+
+	var wg sync.WaitGroup
+	var seqCounter int64
+	reachedDestination := int32(0)
+
+	workerCount := options.MaxWorkers
+	if workerCount > maxHops {
+		workerCount = maxHops
+	}
+
+	for i := 0; i < workerCount; i++ {
+		wg.Add(1)
+		go func(workerID int) {
+			defer wg.Done()
+
+			for {
+				select {
+				case task, ok := <-taskChan:
+					if !ok {
+						return
+					}
+
+					if options.EarlyStop && atomic.LoadInt32(&reachedDestination) == 1 && task.ttl > int(atomic.LoadInt32(&reachedDestination)) {
+						continue
+					}
+
+					processTask(ctx, task, destAddr, srcAddr, pid, timeout, &seqCounter, mtrReturns, &reachedDestination)
+
+				case <-ctx.Done():
+					return
+				}
+			}
+		}(i)
+	}
+
+	wg.Wait()
+
+	buildResult(result, mtrReturns, destAddr, count)
+
+	return result
+}
