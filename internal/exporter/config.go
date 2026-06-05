@@ -34,3 +34,6 @@ func init() {
 		String()
 
 	NetworkConfigfile = kingpin.Flag("config.file", "Network exporter configuration file").
+		Default("/etc/uos-exporter/network-exporter.yaml").
+		String()
+}
