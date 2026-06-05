@@ -37,3 +37,10 @@ func init() {
 		Default("/etc/uos-exporter/network-exporter.yaml").
 		String()
 }
+
+type Config struct {
+	Logging     logger.Config `yaml:"log"`
+	Address     string        `yaml:"address"`
+	Port        int           `yaml:"port"`
+	MetricsPath string        `yaml:"metricsPath"`
+}
