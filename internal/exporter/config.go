@@ -48,3 +48,7 @@ type Config struct {
 func Unpack(config interface{}) error {
 	configPath := *Configfile
 	if utils.FileExists(*NetworkConfigfile) {
+		configPath = *NetworkConfigfile
+	}
+	cleanPath := filepath.Clean(configPath)
+	configDir := "/etc/uos-exporter"
