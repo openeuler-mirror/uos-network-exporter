@@ -169,3 +169,45 @@ func (sc *SafeConfig) ReloadConfig(confFile string) (err error) {
 	if err = yaml.Unmarshal(content, c); err != nil {
 		return fmt.Errorf("parsing config file: %s", err)
 	}
+
+	// Validate and Filter config
+	targets := Targets{}
+	re := regexp.MustCompile("^ICMP|MTR|ICMP+MTR|TCP|HTTPGet$")
+	for _, t := range c.Targets {
+		found := re.MatchString(t.Type)
+		if !found {
+			logrus.Errorf("Unknown check type, target: %s, check_type: %s, allowed: (ICMP|MTR|ICMP+MTR|TCP|HTTPGet)", t.Name, t.Type)
+			continue
+		}
+
+		if t.Probe == nil {
+			targets = append(targets, t)
+		} else {
+			for _, p := range t.Probe {
+				if p == hostname {
+					targets = append(targets, t)
+					continue
+				}
+			}
+		}
+	}
+
+	c.Targets = targets
+
+	// Config precheck
+	if c.ICMP.Interval <= 0 || c.MTR.Interval <= 0 || c.TCP.Interval <= 0 || c.HTTPGet.Interval <= 0 {
+		return fmt.Errorf("intervals (icmp,mtr,tcp,http_get) must be >0")
+	}
+	if c.MTR.MaxHops < 0 || c.MTR.MaxHops > 65500 {
+		return fmt.Errorf("mtr.max-hops must be between 0 and 65500")
+	}
+	if c.MTR.Count < 0 || c.MTR.Count > 65500 {
+		return fmt.Errorf("mtr.count must be between 0 and 65500")
+	}
+
+	sc.Lock()
+	sc.Cfg = c
+	sc.Unlock()
+
+	return nil
+}
