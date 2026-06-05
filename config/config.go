@@ -45,3 +45,63 @@ func init() {
 		logrus.Warn("Insecure mode enabled, this is not recommended for production use.")
 	}
 }
+
+type Settings struct {
+	ScrapeUri string `yaml:"scrape_uri"`
+	Insecure  bool   `yaml:"insecure"`
+}
+
+type Targets []struct {
+	Name     string   `yaml:"name" json:"name"`
+	Host     string   `yaml:"host" json:"host"`
+	Port     string   `yaml:"port" json:"port"`
+	Type     string   `yaml:"type" json:"type"`
+	Proxy    string   `yaml:"proxy" json:"proxy"`
+	Probe    []string `yaml:"probe" json:"probe"`
+	SourceIp string   `yaml:"source_ip" json:"source_ip"`
+	Labels   extraKV  `yaml:"labels,omitempty" json:"labels,omitempty"`
+}
+
+type HTTPGet struct {
+	Interval duration `yaml:"interval" json:"interval" default:"15s"`
+	Timeout  duration `yaml:"timeout" json:"timeout" default:"14s"`
+}
+
+type TCP struct {
+	Interval duration `yaml:"interval" json:"interval" default:"5s"`
+	Timeout  duration `yaml:"timeout" json:"timeout" default:"4s"`
+}
+
+type MTR struct {
+	Interval duration `yaml:"interval" json:"interval" default:"5s"`
+	Timeout  duration `yaml:"timeout" json:"timeout" default:"4s"`
+	MaxHops  int      `yaml:"max-hops" json:"max-hops" default:"30"`
+	Count    int      `yaml:"count" json:"count" default:"10"`
+}
+
+type ICMP struct {
+	Interval duration `yaml:"interval" json:"interval" default:"5s"`
+	Timeout  duration `yaml:"timeout" json:"timeout" default:"4s"`
+	Count    int      `yaml:"count" json:"count" default:"10"`
+}
+
+type Conf struct {
+	Refresh           duration `yaml:"refresh" json:"refresh" default:"0s"`
+	Nameserver        string   `yaml:"nameserver" json:"nameserver"`
+	NameserverTimeout duration `yaml:"nameserver_timeout" json:"nameserver_timeout" default:"250ms"`
+}
+
+type NetworkConfig struct {
+	Conf    `yaml:"conf" json:"conf"`
+	ICMP    `yaml:"icmp" json:"icmp"`
+	MTR     `yaml:"mtr" json:"mtr"`
+	TCP     `yaml:"tcp" json:"tcp"`
+	HTTPGet `yaml:"http_get" json:"http_get"`
+	Targets `yaml:"targets" json:"targets"`
+}
+
+type duration time.Duration
+
+type extraKV struct {
+	Kv map[string]string `yaml:"kv,omitempty" json:"kv,omitempty"`
+}
