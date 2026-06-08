@@ -60,3 +60,7 @@ func Unpack(config interface{}) error {
 	} else {
 		file, err := os.Open(configPath)
 		if err != nil {
+			logrus.Error("Failed to open config file: ", err)
+			return err
+		}
+		err = yaml.NewDecoder(file).Decode(config)
