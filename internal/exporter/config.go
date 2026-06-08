@@ -64,3 +64,9 @@ func Unpack(config interface{}) error {
 			return err
 		}
 		err = yaml.NewDecoder(file).Decode(config)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
