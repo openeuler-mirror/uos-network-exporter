@@ -56,3 +56,7 @@ func Unpack(config interface{}) error {
 		return fmt.Errorf("config file must be located within %s", configDir)
 	}
 	if !utils.FileExists(cleanPath) {
+		logrus.Errorf("%s file not found", configPath)
+	} else {
+		file, err := os.Open(configPath)
+		if err != nil {
