@@ -52,3 +52,7 @@ func Unpack(config interface{}) error {
 	}
 	cleanPath := filepath.Clean(configPath)
 	configDir := "/etc/uos-exporter"
+	if !strings.HasPrefix(cleanPath, configDir) {
+		return fmt.Errorf("config file must be located within %s", configDir)
+	}
+	if !utils.FileExists(cleanPath) {
