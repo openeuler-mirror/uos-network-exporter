@@ -29,3 +29,9 @@ func NewRegistry() *Registry {
 		metrics: []Metric{},
 	}
 }
+
+func (r *Registry) Register(metrics Metric) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.metrics = append(r.metrics, metrics)
+}
