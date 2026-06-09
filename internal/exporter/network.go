@@ -27,3 +27,4 @@ type NetworkExporter struct {
 func NewNetworkExporter(logger *slog.Logger, cfg *config.SafeConfig) *NetworkExporter {
 	resolver := &net.Resolver{
 		PreferGo: true,
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
