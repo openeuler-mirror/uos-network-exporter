@@ -19,3 +19,6 @@ type NetworkExporter struct {
 	resolver    *net.Resolver
 	pingMetrics *metrics.PingMetrics
 	tcpMetrics  *metrics.TCPMetrics
+	httpMetrics *metrics.HTTPMetrics
+	mtrMetrics  *metrics.MTRMetrics
+}
