@@ -41,3 +41,7 @@ func NewNetworkExporter(logger *slog.Logger, cfg *config.SafeConfig) *NetworkExp
 		resolver: resolver,
 		pingMetrics: metrics.NewPingMetrics(logger, resolver),
 		tcpMetrics:  metrics.NewTCPMetrics(logger, resolver),
+		httpMetrics: metrics.NewHTTPMetrics(logger, resolver),
+		mtrMetrics:  metrics.NewMTRMetrics(logger, resolver),
+	}
+}
