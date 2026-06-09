@@ -22,3 +22,8 @@ type NetworkExporter struct {
 	httpMetrics *metrics.HTTPMetrics
 	mtrMetrics  *metrics.MTRMetrics
 }
+
+// NewNetworkExporter 创建新的网络导出器
+func NewNetworkExporter(logger *slog.Logger, cfg *config.SafeConfig) *NetworkExporter {
+	resolver := &net.Resolver{
+		PreferGo: true,
