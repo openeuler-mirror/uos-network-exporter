@@ -35,3 +35,9 @@ func (r *Registry) Register(metrics Metric) {
 	defer r.mu.Unlock()
 	r.metrics = append(r.metrics, metrics)
 }
+
+func (r *Registry) GetMetrics() []Metric {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	return r.metrics
+}
