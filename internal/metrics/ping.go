@@ -123,3 +123,11 @@ func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 				})
 				p.setMetricWithLabels("rtt_seconds", result.AvgTime.Seconds(), map[string]string{
 					"name": target.Name, "target": target.Host, "target_ip": ip, "type": "mean",
+				})
+				p.setMetricWithLabels("rtt_seconds", result.WorstTime.Seconds(), map[string]string{
+					"name": target.Name, "target": target.Host, "target_ip": ip, "type": "worst",
+				})
+				p.setMetricWithLabels("rtt_seconds", result.SumTime.Seconds(), map[string]string{
+					"name": target.Name, "target": target.Host, "target_ip": ip, "type": "sum",
+				})
+				p.setMetricWithLabels("loss_percent", result.DropRate, labels)
