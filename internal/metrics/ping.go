@@ -67,3 +67,11 @@ func (p *PingMetrics) getCachedResult(key string) *ping.PingResult {
 	if entry, exists := p.cache[key]; exists {
 		if time.Since(entry.timestamp) < p.cacheTTL {
 			return entry.result
+		}
+	}
+	return nil
+}
+
+func (p *PingMetrics) setCachedResult(key string, result *ping.PingResult) {
+	p.cacheMux.Lock()
+	defer p.cacheMux.Unlock()
