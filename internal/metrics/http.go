@@ -30,3 +30,11 @@ func NewHTTPMetrics(logger *slog.Logger, resolver *net.Resolver) *HTTPMetrics {
 	}
 }
 
+func (h *HTTPMetrics) Describe(ch chan<- *prometheus.Desc) {
+	h.baseMetrics.Describe(ch)
+}
+
+func (h *HTTPMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
+	h.baseMetrics.Collect(ch)
+}
+
