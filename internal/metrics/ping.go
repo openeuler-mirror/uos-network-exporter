@@ -107,3 +107,11 @@ func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 			cacheKey := target.Name + "_" + ip
 			result := p.getCachedResult(cacheKey)
 			if result == nil {
+				p.logger.Debug("Executing PING", "target", target.Name, "ip", ip)
+				result = ping.Ping(target.Host, ip, 3*time.Second, 3)
+				p.setCachedResult(cacheKey, result)
+			} else {
+				p.logger.Debug("Using cached PING result", "target", target.Name, "ip", ip)
+			}
+			labels := map[string]string{
+				"name": target.Name, "target": target.Host, "target_ip": ip,
