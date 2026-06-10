@@ -19,3 +19,11 @@ type PingCacheEntry struct {
 	result    *ping.PingResult
 	timestamp time.Time
 }
+
+// PingMetrics ping相关的metrics
+type PingMetrics struct {
+	*baseMetrics
+	logger   *slog.Logger
+	resolver *net.Resolver
+	icmpID   *common.IcmpID
+}
