@@ -30,3 +30,8 @@ type PingMetrics struct {
 	cacheMux sync.RWMutex
 	cacheTTL time.Duration
 }
+// NewPingMetrics 创建新的ping metrics实例
+func NewPingMetrics(logger *slog.Logger, resolver *net.Resolver) *PingMetrics {
+	base := newBaseMetrics("ping")
+	base.addMetric("status", "Ping Status", []string{"name", "target", "target_ip"})
+	base.addMetric("rtt_seconds", "Round Trip Time", []string{"name", "target", "target_ip", "type"})
