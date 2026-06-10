@@ -26,4 +26,7 @@ type PingMetrics struct {
 	logger   *slog.Logger
 	resolver *net.Resolver
 	icmpID   *common.IcmpID
+	cache    map[string]*PingCacheEntry
+	cacheMux sync.RWMutex
+	cacheTTL time.Duration
 }
