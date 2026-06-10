@@ -115,3 +115,11 @@ func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 			}
 			labels := map[string]string{
 				"name": target.Name, "target": target.Host, "target_ip": ip,
+			}
+			if result.Success {
+				p.setMetricWithLabels("status", 1, labels)
+				p.setMetricWithLabels("rtt_seconds", result.BestTime.Seconds(), map[string]string{
+					"name": target.Name, "target": target.Host, "target_ip": ip, "type": "best",
+				})
+				p.setMetricWithLabels("rtt_seconds", result.AvgTime.Seconds(), map[string]string{
+					"name": target.Name, "target": target.Host, "target_ip": ip, "type": "mean",
