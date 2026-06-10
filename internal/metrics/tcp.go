@@ -70,3 +70,11 @@ func (t *TCPMetrics) Collect(cfg *config.NetworkConfig) {
 			}
 			if result.Success {
 				t.setMetricWithLabels("connection_status", 1, labels)
+				t.setMetricWithLabels("connection_seconds", result.ConTime.Seconds(), labels)
+			} else {
+				t.setMetricWithLabels("connection_status", 0, labels)
+			}
+		}
+	}
+	t.setMetric("targets", float64(targetCount))
+}
