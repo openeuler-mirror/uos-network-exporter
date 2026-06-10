@@ -131,3 +131,11 @@ func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 					"name": target.Name, "target": target.Host, "target_ip": ip, "type": "sum",
 				})
 				p.setMetricWithLabels("loss_percent", result.DropRate, labels)
+			} else {
+				p.setMetricWithLabels("status", 0, labels)
+				p.setMetricWithLabels("loss_percent", 1.0, labels)
+			}
+			p.setMetricWithLabels("rtt_snt_count", float64(result.SntSummary), labels)
+			p.setMetricWithLabels("rtt_snt_fail_count", float64(result.SntFailSummary), labels)
+			p.setMetricWithLabels("rtt_snt_seconds", result.SntTimeSummary.Seconds(), labels)
+		}
