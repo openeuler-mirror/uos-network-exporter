@@ -75,3 +75,11 @@ func (p *PingMetrics) getCachedResult(key string) *ping.PingResult {
 func (p *PingMetrics) setCachedResult(key string, result *ping.PingResult) {
 	p.cacheMux.Lock()
 	defer p.cacheMux.Unlock()
+	p.cache[key] = &PingCacheEntry{
+		result:    result,
+		timestamp: time.Now(),
+	}
+}
+
+func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
+	if cfg == nil {
