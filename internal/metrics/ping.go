@@ -43,3 +43,11 @@ func NewPingMetrics(logger *slog.Logger, resolver *net.Resolver) *PingMetrics {
 	base.addMetric("targets", "Number of active targets", nil)
 	base.addMetric("up", "Exporter state", nil)
 
+	return &PingMetrics{
+		baseMetrics: base,
+		logger:      logger,
+		resolver:    resolver,
+		icmpID:      &common.IcmpID{},
+		cache:       make(map[string]*PingCacheEntry),
+		cacheTTL:    15 * time.Second,
+	}
