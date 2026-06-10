@@ -22,3 +22,11 @@ func NewTCPMetrics(logger *slog.Logger, resolver *net.Resolver) *TCPMetrics {
 	base := newBaseMetrics("tcp")
 	base.addMetric("connection_seconds", "Connection time in seconds", []string{"name", "target", "target_ip", "source_ip", "port"})
 	base.addMetric("connection_status", "Connection Status", []string{"name", "target", "target_ip", "source_ip", "port"})
+	base.addMetric("targets", "Number of active targets", nil)
+	base.addMetric("up", "Exporter state", nil)
+	return &TCPMetrics{
+		baseMetrics: base,
+		logger:      logger,
+		resolver:    resolver,
+	}
+}
