@@ -30,3 +30,11 @@ func NewTCPMetrics(logger *slog.Logger, resolver *net.Resolver) *TCPMetrics {
 		resolver:    resolver,
 	}
 }
+
+func (t *TCPMetrics) Describe(ch chan<- *prometheus.Desc) {
+	t.baseMetrics.Describe(ch)
+}
+
+func (t *TCPMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
+	t.baseMetrics.Collect(ch)
+}
