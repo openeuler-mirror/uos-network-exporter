@@ -46,3 +46,11 @@ func (t *TCPMetrics) Collect(cfg *config.NetworkConfig) {
 	}
 	t.setMetric("up", 1)
 	targetCount := 0
+	for _, target := range cfg.Targets {
+		if target.Type != "TCP" {
+			continue
+		}
+		targetCount++
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		ipAddrs, err := common.DestAddrs(ctx, target.Host, t.resolver, 5*time.Second)
+		cancel()
