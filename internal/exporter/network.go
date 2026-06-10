@@ -45,3 +45,11 @@ func NewNetworkExporter(logger *slog.Logger, cfg *config.SafeConfig) *NetworkExp
 		mtrMetrics:  metrics.NewMTRMetrics(logger, resolver),
 	}
 }
+
+// Describe 实现prometheus.Collector接口
+func (ne *NetworkExporter) Describe(ch chan<- *prometheus.Desc) {
+	ne.pingMetrics.Describe(ch)
+	ne.tcpMetrics.Describe(ch)
+	ne.httpMetrics.Describe(ch)
+	ne.mtrMetrics.Describe(ch)
+}
