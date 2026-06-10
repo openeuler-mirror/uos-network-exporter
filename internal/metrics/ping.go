@@ -83,3 +83,11 @@ func (p *PingMetrics) setCachedResult(key string, result *ping.PingResult) {
 
 func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 	if cfg == nil {
+		p.logger.Warn("ICMP config is nil")
+		return
+	}
+	p.setMetric("up", 1)
+	targetCount := 0
+	for _, target := range cfg.Targets {
+		if target.Type != "ICMP" && target.Type != "ICMP+MTR" {
+			continue
