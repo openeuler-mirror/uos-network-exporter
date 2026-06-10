@@ -91,3 +91,11 @@ func (p *PingMetrics) Collect(cfg *config.NetworkConfig) {
 	for _, target := range cfg.Targets {
 		if target.Type != "ICMP" && target.Type != "ICMP+MTR" {
 			continue
+		}
+		targetCount++
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		ipAddrs, err := common.DestAddrs(ctx, target.Host, p.resolver, 3*time.Second)
+		cancel()
+		if err != nil || len(ipAddrs) == 0 {
+			p.logger.Warn("Failed to resolve target", "host", target.Host, "error", err)
+			p.setMetricWithLabels("status", 0, map[string]string{
