@@ -86,3 +86,11 @@ type duration time.Duration
 
 type extraKV struct {
 	Kv map[string]string `yaml:"kv,omitempty" json:"kv,omitempty"`
+}
+
+func (b *extraKV) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	return unmarshal(&b.Kv)
+}
+
+type Resolver struct {
+	Resolver *net.Resolver
