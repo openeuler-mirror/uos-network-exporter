@@ -54,3 +54,11 @@ func (h *HTTPMetrics) Collect(cfg *config.NetworkConfig) {
 			Timeout: time.Second * 3,
 		}
 		start := time.Now()
+		resp, err := client.Get(target.Host)
+		duration := time.Since(start)
+		success := 0.0
+		statusCode := 0.0
+		contentLength := 0.0
+		if err == nil {
+			success = 1.0
+			statusCode = float64(resp.StatusCode)
