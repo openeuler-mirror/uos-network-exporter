@@ -118,3 +118,11 @@ func (d *duration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	dur, err := time.ParseDuration(s)
 	if err != nil {
 		return err
+	}
+	*d = duration(dur)
+	return nil
+}
+
+func (sc *SafeConfig) ReloadConfig(confFile string) (err error) {
+	var c = &NetworkConfig{}
+	cleanPath := filepath.Clean(confFile)
