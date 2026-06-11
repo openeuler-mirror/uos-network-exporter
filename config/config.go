@@ -54,3 +54,11 @@ type TCP struct {
 	Timeout  duration `yaml:"timeout" json:"timeout"`
 }
 
+type MTR struct {
+	Interval duration `yaml:"interval" json:"interval"`
+	Timeout  duration `yaml:"timeout" json:"timeout"`
+	MaxHops  int      `yaml:"max-hops" json:"max-hops"`
+	Count    int      `yaml:"count" json:"count"`
+}
+
+type ICMP struct {
