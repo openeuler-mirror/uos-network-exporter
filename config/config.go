@@ -62,3 +62,11 @@ type MTR struct {
 }
 
 type ICMP struct {
+	Interval duration `yaml:"interval" json:"interval"`
+	Timeout  duration `yaml:"timeout" json:"timeout"`
+	Count    int      `yaml:"count" json:"count"`
+}
+
+type Conf struct {
+	Refresh           duration `yaml:"refresh" json:"refresh"`
+	Nameserver        string   `yaml:"nameserver" json:"nameserver"`
