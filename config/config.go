@@ -110,3 +110,11 @@ func (d *duration) Set(dur time.Duration) {
 	*d = duration(dur)
 }
 
+func (d *duration) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var s string
+	if err := unmarshal(&s); err != nil {
+		return err
+	}
+	dur, err := time.ParseDuration(s)
+	if err != nil {
+		return err
