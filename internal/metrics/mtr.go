@@ -38,3 +38,11 @@ func NewMTRMetrics(logger *slog.Logger, resolver *net.Resolver) *MTRMetrics {
 	base.addMetric("hops", "Number of route hops", []string{"name", "target"})
 	base.addMetric("targets", "Number of active targets", nil)
 	base.addMetric("up", "Exporter state", nil)
+	return &MTRMetrics{
+		baseMetrics: base,
+		logger:      logger,
+		resolver:    resolver,
+		cache:       make(map[string]*MTRCacheEntry),
+		cacheTTL:    30 * time.Second,
+	}
+}
