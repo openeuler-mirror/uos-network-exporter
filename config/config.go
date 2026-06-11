@@ -102,3 +102,11 @@ type SafeConfig struct {
 	sync.RWMutex
 }
 
+func (d duration) Duration() time.Duration {
+	return time.Duration(d)
+}
+
+func (d *duration) Set(dur time.Duration) {
+	*d = duration(dur)
+}
+
