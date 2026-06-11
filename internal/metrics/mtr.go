@@ -70,3 +70,11 @@ func (m *MTRMetrics) setCachedResult(key string, result *mtr.MtrResult) {
 	m.cacheMux.Lock()
 	defer m.cacheMux.Unlock()
 	m.cache[key] = &MTRCacheEntry{
+		result:    result,
+		timestamp: time.Now(),
+	}
+}
+
+func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
+	if cfg == nil {
+		m.logger.Warn("MTR config is nil")
