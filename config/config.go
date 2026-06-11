@@ -14,3 +14,11 @@ import (
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
+
+var (
+	ScrapeUrl       *string
+	Insecure        *bool
+	DefaultSettings = Settings{
+		Insecure: false,
+	}
+)
