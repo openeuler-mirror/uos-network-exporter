@@ -30,3 +30,11 @@ func init() {
 
 type Settings struct {
 	ScrapeUri string `yaml:"scrape_uri"`
+	Insecure  bool   `yaml:"insecure"`
+}
+
+type Targets []struct {
+	Name     string   `yaml:"name" json:"name"`
+	Host     string   `yaml:"host" json:"host"`
+	Port     string   `yaml:"port" json:"port"`
+	Type     string   `yaml:"type" json:"type"`
