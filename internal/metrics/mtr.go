@@ -62,3 +62,11 @@ func (m *MTRMetrics) getCachedResult(key string) *mtr.MtrResult {
 		if time.Since(entry.timestamp) < m.cacheTTL {
 			return entry.result
 		}
+	}
+	return nil
+}
+
+func (m *MTRMetrics) setCachedResult(key string, result *mtr.MtrResult) {
+	m.cacheMux.Lock()
+	defer m.cacheMux.Unlock()
+	m.cache[key] = &MTRCacheEntry{
