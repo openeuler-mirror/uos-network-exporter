@@ -94,3 +94,11 @@ func (m *MTRMetrics) Collect(cfg *config.NetworkConfig) {
 			m.logger.Warn("Failed to resolve target", "host", target.Host, "error", err)
 			continue
 		}
+		for _, ip := range ipAddrs {
+			cacheKey := target.Name + "_" + ip
+			result := m.getCachedResult(cacheKey)
+			if result == nil {
+				m.logger.Debug("Executing MTR", "target", target.Name, "ip", ip)
+				result = mtr.RunMTR(ip, "", cfg.MTR.Timeout.Duration(), cfg.MTR.MaxHops, cfg.MTR.Count)
+				m.setCachedResult(cacheKey, result)
+			} else {
