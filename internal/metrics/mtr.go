@@ -54,3 +54,11 @@ func (m *MTRMetrics) Describe(ch chan<- *prometheus.Desc) {
 func (m *MTRMetrics) CollectMetrics(ch chan<- prometheus.Metric) {
 	m.baseMetrics.Collect(ch)
 }
+
+func (m *MTRMetrics) getCachedResult(key string) *mtr.MtrResult {
+	m.cacheMux.RLock()
+	defer m.cacheMux.RUnlock()
+	if entry, exists := m.cache[key]; exists {
+		if time.Since(entry.timestamp) < m.cacheTTL {
+			return entry.result
+		}
