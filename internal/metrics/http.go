@@ -70,3 +70,11 @@ func (h *HTTPMetrics) Collect(cfg *config.NetworkConfig) {
 		baseLabels := map[string]string{
 			"name": target.Name, "target": target.Host,
 		}
+		h.setMetricWithLabels("get_status", statusCode, baseLabels)
+		h.setMetricWithLabels("get_content_bytes", contentLength, baseLabels)
+		h.setMetricWithLabels("get_seconds", duration.Seconds(), map[string]string{
+			"name": target.Name, "target": target.Host, "type": "Total",
+		})
+		h.setMetric("get_up", success)
+	}
+	h.setMetric("get_targets", float64(targetCount))
